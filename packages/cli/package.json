@@ -1,0 +1,34 @@
+{
+  "name": "@graphql-workspaces/cli",
+  "version": "0.0.2",
+  "description": "",
+  "main": "./dist/cjs/index.js",
+  "bin": {
+    "gql": "./dist/cjs/index.js"
+  },
+  "repository": {
+    "url": "https://github.com/michaeldgraham/graphql-workspaces.git"
+  },
+  "scripts": {
+    "build-esm": "tsc -p tsconfig.json",
+    "build-cjs": "tsc -p tsconfig-cjs.json"
+  },
+  "keywords": [
+    "GraphQL",
+    "Workspaces",
+    "CLI"
+  ],
+  "author": "Michael Graham",
+  "license": "MIT",
+  "dependencies": {
+    "@graphql-workspaces/load": "0.0.1",
+    "graphql-tools": "^7.0.4",
+    "ignorefs": "^3.14.0",
+    "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.37",
+    "tsc": "^1.20150623.0",
+    "typescript": "^4.2.3"
+  }
+}
