@@ -1,0 +1,23 @@
+{
+  "name": "graphl-workspaces-monorepo",
+  "version": "0.0.1",
+  "description": "Useful tools for developing GraphQL schemas.",
+  "workspaces": {
+    "packages": [
+      "./packages/*"
+    ]
+  },
+  "repository": {
+    "url": "https://github.com/michaeldgraham/graphql-workspaces.git"
+  },
+  "bugs": {
+    "url": "https://github.com/michaeldgraham/graphql-workspaces/issues"
+  },
+  "keywords": [
+    "GraphQL",
+    "Workspaces",
+    "Load",
+    "Cli",
+    "Tools"
+  ]
+}
