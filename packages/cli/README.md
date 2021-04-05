@@ -14,22 +14,22 @@ npm install -g @graphql-workspaces/cli
 ```
 gql [command] [options]
 ```
-### Commands
+#### Commands
 #### `gql print <path>`
+```
+  print <path|p>  Prints the GraphQL contents at <path>
+
+  <path|p>        Required positional argument for path
+  -n, --name      Optional argument for custom file extension
+```
 The print command loads and merges the GraphQL contents of file or directory at the provided path and prints the results to a `.printed.graphql` file at the same location.
 
 Both `.graphql` and `.gql` files can be loaded and printed. GraphQL documents exported from `.js` or `.ts` files, as CommonJS or ES modules, are loaded and printed - a common file architecture when using the `gql` template literal available from [graphql-tag](https://www.npmjs.com/package/graphql-tag) or [apollo-server](https://www.npmjs.com/package/apollo-server).
 
 An [executable schema](https://www.graphql-tools.com/docs/generate-schema/) can also be printed, but a version conflict with the [graphql](https://www.npmjs.com/package/graphql) library must be avoided. To do this, install the cli locally and make an npm script, such as `print-generated-schema`, calling `./node_modules/.bin/gql`, with a path to the file exporting the schema. This is useful for printing the executable schema built by libraries that transform and augment the type definitions provided to them, such as those that integrate database languages.
 
-```
-Command:
-  print <path|p>  Prints the merged GraphQL Documents at the provided path.
-
-Options:
-  <path|p>        Required optional argument for path to directory or file.
-  -n, --name      Optional argument for file extension prefix (default: <path>.printed.graphql).
-```
 ### Examples
 ##### Printing a directory
-![example](example.png)
+![example](https://github.com/michaeldgraham/graphql-workspaces/blob/main/packages/cli/example.png?raw=true)
+##### Printing a file in a directory
+![example](https://github.com/michaeldgraham/graphql-workspaces/blob/main/packages/cli/example2.png?raw=true)
