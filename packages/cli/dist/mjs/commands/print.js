@@ -1,8 +1,8 @@
 "use strict";
-const path = require('path');
 const { loadWorkspace } = require('@graphql-workspaces/load');
+const { print } = require('graphql');
+const path = require('path');
 const { isPrefixedExtName } = require('../path');
-const { printWithComments } = require('graphql-tools');
 const fs = require("fs");
 const { isIgnoredPath } = require('ignorefs');
 const command = "print <path|p>";
@@ -31,16 +31,14 @@ const printer = async (absPath = "", pattern = "", name) => {
     const parsed = path.parse(absPath);
     const fileName = parsed.name;
     if (fileName) {
-        // delete require.cache[path.resolve(absPath)];
         const loaded = await loadWorkspace(pattern);
-        const extname = parsed.ext === ".graphql" ? parsed.ext : ".graphql"; // TODO1 test this, wtf is it really doing here lol?
         const printPath = path.format({
             ...parsed,
-            base: `${fileName}.${name}${extname}`
+            base: `${fileName}.${name}.graphql`
         });
         const definitions = loaded.definitions || [];
         if (definitions.length) {
-            const formatted = printWithComments(loaded);
+            const formatted = print(loaded);
             fs.createWriteStream(printPath).write(formatted);
         }
     }

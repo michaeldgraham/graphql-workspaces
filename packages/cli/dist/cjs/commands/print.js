@@ -8,10 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const path = require('path');
 const { loadWorkspace } = require('@graphql-workspaces/load');
+const { print } = require('graphql');
+const path = require('path');
 const { isPrefixedExtName } = require('../path');
-const { printWithComments } = require('graphql-tools');
 const fs = require("fs");
 const { isIgnoredPath } = require('ignorefs');
 const command = "print <path|p>";
@@ -40,13 +40,11 @@ const printer = (absPath = "", pattern = "", name) => __awaiter(void 0, void 0, 
     const parsed = path.parse(absPath);
     const fileName = parsed.name;
     if (fileName) {
-        // delete require.cache[path.resolve(absPath)];
         const loaded = yield loadWorkspace(pattern);
-        const extname = parsed.ext === ".graphql" ? parsed.ext : ".graphql"; // TODO1 test this, wtf is it really doing here lol?
-        const printPath = path.format(Object.assign(Object.assign({}, parsed), { base: `${fileName}.${name}${extname}` }));
+        const printPath = path.format(Object.assign(Object.assign({}, parsed), { base: `${fileName}.${name}.graphql` }));
         const definitions = loaded.definitions || [];
         if (definitions.length) {
-            const formatted = printWithComments(loaded);
+            const formatted = print(loaded);
             fs.createWriteStream(printPath).write(formatted);
         }
     }
