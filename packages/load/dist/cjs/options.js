@@ -29,6 +29,7 @@ const setConfig = (config = {}) => (Object.assign({
             imported = esmRequire(absPath);
         }
         catch (err) {
+            // Log module import errors
             console.error(err);
         }
         finally {

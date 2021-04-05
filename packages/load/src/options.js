@@ -26,6 +26,7 @@ export const setConfig = (config = {}) => ({
       imported = esmRequire(absPath);
     }
     catch(err) {
+      // Log module import errors
       console.error(err);
     }
     finally {

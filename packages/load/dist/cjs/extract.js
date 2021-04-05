@@ -1,44 +1,60 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractDefinitionsFromDocuments = exports.extractDocumentsFromFiles = void 0;
-const graphql_1 = require("graphql");
-const graphql_tools_1 = require("graphql-tools");
-const lodash_isobject_1 = __importDefault(require("lodash.isobject"));
+const { isDocumentNode, printSchemaWithDirectives, parseGraphQLSDL } = require('graphql-tools');
+const isObject = require('lodash.isobject');
 /**
  * Extracts GraphQL Documents from loaded files.
  * @param files The files to extract from
  */
 const extractDocumentsFromFiles = (files = []) => files.flatMap(file => {
-    if (graphql_tools_1.isDocumentNode(file))
+    // Default exports is a GraphQL Dcument
+    if (isDocumentNode(file))
         return file;
-    else if (lodash_isobject_1.default(file))
+    // An object of imported exports from a module
+    else if (isObject(file))
         return extractDocumentsFromFile(file);
-    if (file) {
+    else if (file) {
+        // Try to parse SDL
         try {
-            return graphql_1.parse(file);
+            return parseGraphQLSDL("0", file).document;
         }
         catch (err) {
-            return {};
+            // console.error(err);
         }
     }
-    else
-        return {};
+    return {};
 });
-exports.extractDocumentsFromFiles = extractDocumentsFromFiles;
 /**
  * Extracts GraphQL AST definitions from a loaded file.
  * @param file
  */
-const extractDocumentsFromFile = (file = {}) => Object.values(file).filter(exported => graphql_tools_1.isDocumentNode(exported));
+const extractDocumentsFromFile = (file = {}) => Object.values(file).flatMap(exported => {
+    if (isDocumentNode(exported))
+        return exported;
+    try {
+        // Try to print as a schema with directives and parse it to a GraphQL Document
+        return parseGraphQLSDL("0", printSchemaWithDirectives(exported)).document;
+    }
+    catch (err) {
+        // If not a schema, error = schema.getTypeMap is not a function 
+        // console.error(err);
+    }
+    try {
+        // Try to parse as SDL
+        return parseGraphQLSDL("0", file).document;
+    }
+    catch (err) {
+        // console.error(err);
+    }
+    return {};
+});
 /**
  * Extracts GraphQL AST definitions from GraphQL Documents.
  * @param documents The documents to extract from
  */
 const extractDefinitionsFromDocuments = (documents = []) => {
-    const definitions = documents.flatMap(doc => doc.definitions);
-    return definitions.sort(node => graphql_1.isTypeExtensionNode(node) ? 1 : -1);
+    return documents.flatMap(doc => doc.definitions);
 };
-exports.extractDefinitionsFromDocuments = extractDefinitionsFromDocuments;
+module.exports = {
+    extractDocumentsFromFiles,
+    extractDefinitionsFromDocuments
+};
