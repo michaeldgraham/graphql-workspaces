@@ -12,6 +12,8 @@ This is a monorepo for all modules created for the GraphQL Workspaces project:
 * Corresponding VSCode extension
   * Workspace directory navigational UI
     * Visualization of GraphQL files
+      * Schema files
+      * Operations
 
 * Packages
   * @graphql-workspaces/cli
