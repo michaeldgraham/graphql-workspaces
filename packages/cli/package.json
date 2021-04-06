@@ -1,7 +1,7 @@
 {
   "name": "@graphql-workspaces/cli",
-  "version": "1.0.8",
-  "description": "This module uses @graphql-workspaces/load to support a cli named gql.",
+  "version": "1.0.11",
+  "description": "A CLI for GraphQL workflow.",
   "main": "./dist/cjs/index.js",
   "bin": {
     "gql": "./dist/cjs/index.js"
