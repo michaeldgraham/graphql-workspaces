@@ -15,9 +15,13 @@ This is a monorepo for all modules created for the GraphQL Workspaces project:
        * Schema files
        * Operations
 
-* Packages
-  * @graphql-workspaces/cli
-    * Command to generate file directory scaffolding to assist creation of new GraphQL type definitions
-      * Use project-name.workspace.graphql schemas for configuration...
-    * Command to remove all printed GraphQL files within a path
+* `@graphql-workspaces/cli`:
+  * Command to generate file directory scaffolding to assist creation of new GraphQL type definitions
+    * Experiment with user defined `<name>.workspace.graphql` files for providing the semantics of a file directory graph with field names used as command arguments for what to generate at some path
+  * Command to remove all printed GraphQL files within a path
+  * Watch mode for `printed.graphql` files:
+    * Will need to update `@graphql-workspaces/load`:
+      * Figure out how to clear the node require cache + prevent cached es imports while using `esm`
+      * Keep it working with VSCode auto-save toggled on
+      * Keep it working when GraphQL or module import errors are caught
 
