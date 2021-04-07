@@ -1,7 +1,7 @@
 {
   "name": "graphl-workspaces-monorepo",
   "version": "0.0.1",
-  "description": "Useful tools for developing GraphQL schemas.",
+  "description": "Useful tools for working with GraphQL schemas.",
   "workspaces": {
     "packages": [
       "./packages/*"
