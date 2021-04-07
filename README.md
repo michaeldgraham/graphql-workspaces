@@ -9,12 +9,6 @@ This is a monorepo for all modules created for the GraphQL Workspaces project:
 * [@graphql-workspaces/load](https://github.com/michaeldgraham/graphql-workspaces/tree/main/packages/load)
 ### Roadmap
 
-* Corresponding VSCode extension
-   * Workspace directory graph visualization UI
-     * Visualization of GraphQL files
-       * Schema files
-       * Operations
-
 * `@graphql-workspaces/cli`:
   * Command to generate file directory scaffolding to assist creation of new GraphQL type definitions
     * Experiment with user defined `<name>.workspace.graphql` files for providing the semantics of a file directory graph with field names used as command arguments for what to generate at some path
@@ -24,4 +18,11 @@ This is a monorepo for all modules created for the GraphQL Workspaces project:
       * Figure out how to clear the node require cache + prevent cached es imports while using `esm`
       * Keep it working with VSCode auto-save toggled on
       * Keep it working when GraphQL or module import errors are caught
+<br>
 
+* Corresponding VSCode extension
+   * Workspace directory graph visualization UI
+     * Visualization of GraphQL files
+       * Schema files
+       * Operations
+![Experimental Query Visualization](media/query-vis.gif)
