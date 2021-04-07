@@ -24,5 +24,6 @@ This is a monorepo for all modules created for the GraphQL Workspaces project:
    * Workspace directory graph visualization UI
      * Visualization of GraphQL files
        * Schema files
-       * Operations <br>
+       * Operations
+         * Initial experiments for query building <br>
 ![Experimental Query Visualization](media/query-vis.gif)
