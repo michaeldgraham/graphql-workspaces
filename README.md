@@ -1,6 +1,6 @@
 ## GraphQL Workspaces
 
-A project to experiment and develop with tooling for GraphQL project architecture and workflow.
+A project to experiment with and develop tooling for GraphQL project architecture and workflow.
 
 ### Packages
 This is a monorepo for all modules created for the GraphQL Workspaces project:
