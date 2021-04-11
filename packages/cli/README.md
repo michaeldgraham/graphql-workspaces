@@ -24,7 +24,7 @@ gql [command] [options]
   --name, -n       Optional: Customizes extension in printed.graphql
   --watch, -w      Optional: Watches <path> for changes
   --validate, -v   Optional: Validates loaded files as a schema
-  --debug, -d      Optional: Logs errors to terminal
+  --debug, -d      Optional: Logs language validation errors to terminal
 ```
 The print command loads and merges the GraphQL contents of file or directory at the provided path and prints the results to a `.printed.graphql` file at the same location.
 
