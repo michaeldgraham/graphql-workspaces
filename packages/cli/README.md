@@ -48,7 +48,7 @@ gql print MyDirectory --watch
 gql print MyDirectory -w
 ```
 #### `gql print <path> [validate | v]`
-The `--validate` argument validates the type definitions merged as a result of the print command by using [makeExecutableSchema](https://www.graphql-tools.com/docs/generate-schema/) from [graphql-tools](https://www.graphql-tools.com/docs/introduction/), implemented [here](https://github.com/michaeldgraham/graphql-workspaces/blob/740dea5847ef59257706122352a8693a8d4b527d/packages/cli/src/commands/print.js#L62). The familiar GraphQL schema validation errors, such as references to a types without definitions, are normaly ignored when printing to allow for a more flexible development process. Using this argument, the same errors you would expect to get from `makeExecutableSchema` will be printed to the terminal.
+The `--validate` argument validates the type definitions merged as a result of the print command by using [makeExecutableSchema](https://www.graphql-tools.com/docs/generate-schema/) from [graphql-tools](https://www.graphql-tools.com/docs/introduction/). The familiar GraphQL schema validation errors, such as referring to a type without a definition, are normally ignored when printing to allow for a more flexible development process. Using this argument, the same errors you would expect to get from `makeExecutableSchema` will be printed to the terminal.
 ```
 gql print MyDirectory --validate
 gql print MyDirectory -v
