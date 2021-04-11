@@ -5,7 +5,7 @@ When a GraphQL schema grows enough to motivate distributing its type definitions
 
 It can also be useful to print the merged schema to a file for inspection, especially to view the results of libraries that transform and augment the merged schema (such as with database language integrations). But this workflow can bring the overhead of updating the paths used in the printing script when wanting to merge and print the contents of only a file or sub-directory.
 
-[GraphQL Tools](https://www.graphql-tools.com/) provides modules for [loading](https://www.graphql-tools.com/docs/schema-merging#file-loading) and [merging](https://www.graphql-tools.com/docs/schema-merging#merging-type-definitions) GraphQL documents and schemas from files (.graphql, .gql, .js and .ts exports) that are very useful for this workflow. To generalize for it, this module uses [@graphql-workspaces/load](https://www.npmjs.com/package/@graphql-workspaces/load), a wrapper over [loadFiles](https://www.graphql-tools.com/docs/api/modules/load-files#loadfiles) and [mergeTypeDefs](https://www.graphql-tools.com/docs/api/modules/merge#mergetypedefs), to support the below cli:
+[GraphQL Tools](https://www.graphql-tools.com/) provides modules for [loading](https://www.graphql-tools.com/docs/schema-merging#file-loading) and [merging](https://www.graphql-tools.com/docs/schema-merging#merging-type-definitions) GraphQL documents and schemas from files (.graphql, .gql, .js and .ts exports) that are very useful for this workflow. To generalize for it, this cli uses [@graphql-workspaces/load](https://www.npmjs.com/package/@graphql-workspaces/load), a wrapper over [loadFiles](https://www.graphql-tools.com/docs/api/modules/load-files#loadfiles) configured with [esm](https://www.npmjs.com/package/esm), to load from both CommonJS and ES modules. The [yargs](https://www.npmjs.com/package/yargs) package is used to build the cli, with watch mode supported by using [concurrently](https://www.npmjs.com/package/concurrently) within a [chokidar](https://www.npmjs.com/package/chokidar) file watcher to spawn and exit a sub-process that runs the initial cli command again. This avoids issues with require / import module caching when your files change.
 ## Install
 ```
 npm install -g @graphql-workspaces/cli
@@ -40,9 +40,8 @@ gql print MyDirectory --name custom
 gql print MyDirectory -n custom
 ```
 #### `gql print <path> [watch | w]`
-The `--watch` argument sets the printer to watch the provided `<path>`. This works for calling `gql print <path>` on either a single file or a directory.
+The `--watch` argument sets the printer to watch the provided `<path>` for changes. This works for calling `gql print <path>` on either a single file or a directory.
 
-While this CLI uses [esm](https://www.npmjs.com/package/esm) to load `.js` and `.ts` files, watch mode is supported by using [concurrently](https://www.npmjs.com/package/concurrently) within a [chokidar](https://www.npmjs.com/package/chokidar) file watcher to spawn a sub-process that runs the initial `gql` command again. This avoids issues with require / import module caching when your files change.
 ```
 gql print MyDirectory --watch
 gql print MyDirectory -w
