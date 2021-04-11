@@ -14,6 +14,7 @@ const path = require('path');
 const { isPrefixedExtName } = require('../path');
 const fs = require("fs");
 const { isIgnoredPath } = require('ignorefs');
+const { makeExecutableSchema } = require('graphql-tools');
 const concurrently = require('concurrently');
 const chokidar = require('chokidar');
 const command = "print <path|p>";
@@ -37,6 +38,12 @@ const builder = (yargs) => {
         boolean: true,
         default: false
     })
+        .option("validate", {
+        alias: "-v",
+        description: "Sets the printer to validate the result as a schema",
+        boolean: true,
+        default: false
+    })
         .option("debug", {
         alias: "d",
         description: "Sets the printer to log errors to terminal",
@@ -44,7 +51,7 @@ const builder = (yargs) => {
         default: false
     });
 };
-const printer = (absPath = "", pattern = "", name, debug) => __awaiter(void 0, void 0, void 0, function* () {
+const printer = (absPath = "", pattern = "", name, debug, validate) => __awaiter(void 0, void 0, void 0, function* () {
     const parsed = path.parse(absPath);
     const fileName = parsed.name;
     if (fileName) {
@@ -54,6 +61,11 @@ const printer = (absPath = "", pattern = "", name, debug) => __awaiter(void 0, v
         if (definitions.length) {
             const formatted = print(loaded);
             fs.writeFileSync(printPath, formatted);
+            if (validate) {
+                makeExecutableSchema({
+                    typeDefs: formatted
+                });
+            }
         }
     }
 });
@@ -67,7 +79,7 @@ const isValidAbsolutePath = (absPath = "", debug) => {
         console.error(`\n[graphql-workspaces] File path is already generated or contains multiple extensions.\n`);
     return !isPrefixedExt && !isIgnored;
 };
-const handler = ({ "path": pattern, "name": name, "watch": watch, "debug": debug }) => {
+const handler = ({ "path": pattern, "name": name, "watch": watch, "debug": debug, "validate": validate }) => {
     const absPath = path.resolve(pattern);
     if (pattern) {
         fs.exists(absPath, (exists) => {
@@ -81,12 +93,14 @@ const handler = ({ "path": pattern, "name": name, "watch": watch, "debug": debug
                     // a ubprocesses is spawned by concurrently, handled below.
                     // Doing so prevents modules from being cached due when loaded
                     // from within the watcher process
-                    printer(absPath, pattern, name, debug);
+                    printer(absPath, pattern, name, debug, validate);
                 }
             });
         });
         if (watch) {
             const watcher = chokidar.watch(pattern);
+            // Reuse the same command arguments during watch
+            const printerArgs = `${debug ? ' --debug' : ''}${validate ? ' --validate' : ''}`;
             // if watching a directory, path is contained in it
             // else its the same as a single, watched file 
             watcher.on('change', path => {
@@ -96,8 +110,8 @@ const handler = ({ "path": pattern, "name": name, "watch": watch, "debug": debug
                 concurrently([
                     {
                         name: 'gql',
-                        command: `gql print ${pattern}${debug ? ' --debug' : ''}`,
-                        prefixColor: 'green',
+                        command: `gql print ${pattern}${printerArgs}`,
+                        prefixColor: '#00FFFF',
                     },
                 ], {
                     restartTries: 3,
