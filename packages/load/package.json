@@ -1,6 +1,6 @@
 {
   "name": "@graphql-workspaces/load",
-  "version": "1.0.13",
+  "version": "1.0.15",
   "description": "This module is a wrapper around the load-files and merge modules from graphql-tools.",
   "main": "./dist/cjs/index.js",
   "exports": {

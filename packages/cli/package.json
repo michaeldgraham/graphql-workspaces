@@ -1,6 +1,6 @@
 {
   "name": "@graphql-workspaces/cli",
-  "version": "1.0.11",
+  "version": "1.0.15",
   "description": "A CLI for GraphQL workflow.",
   "main": "./dist/cjs/index.js",
   "bin": {
@@ -21,7 +21,9 @@
   "author": "Michael Graham",
   "license": "MIT",
   "dependencies": {
-    "@graphql-workspaces/load": "^1.0.12",
+    "@graphql-workspaces/load": "^1.0.15",
+    "chokidar": "^3.5.1",
+    "concurrently": "^6.0.1",
     "graphql": "^15.5.0",
     "graphql-tools": "^7.0.4",
     "ignorefs": "^3.14.0",

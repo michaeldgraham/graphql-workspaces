@@ -24,9 +24,9 @@ const mergeOptions = {
  * @param pattern Glob pattern or patterns to use when loading files
  * @param options Additional options
  */
-const loadWorkspace = (pattern = "", config = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    const files = yield graphql_tools_1.loadFiles(pattern, options_js_1.setConfig(config));
-    const documents = extract_js_1.extractDocumentsFromFiles(files);
+const loadWorkspace = (pattern = "", config = {}, debug = false) => __awaiter(void 0, void 0, void 0, function* () {
+    const files = yield graphql_tools_1.loadFiles(pattern, options_js_1.setConfig(config, debug));
+    const documents = extract_js_1.extractDocumentsFromFiles(files, debug);
     const definitions = extract_js_1.extractDefinitionsFromDocuments(documents);
     return graphql_tools_1.mergeTypeDefs(definitions, mergeOptions);
 });
@@ -36,9 +36,9 @@ exports.loadWorkspace = loadWorkspace;
  * @param pattern Glob pattern or patterns to use when loading files
  * @param options Additional options
  */
-const loadWorkspaceSync = (pattern = "", config = {}) => {
-    const files = graphql_tools_1.loadFilesSync(pattern, options_js_1.setConfig(config));
-    const documents = extract_js_1.extractDocumentsFromFiles(files);
+const loadWorkspaceSync = (pattern = "", config = {}, debug = false) => {
+    const files = graphql_tools_1.loadFilesSync(pattern, options_js_1.setConfig(config, debug));
+    const documents = extract_js_1.extractDocumentsFromFiles(files, debug);
     const definitions = extract_js_1.extractDefinitionsFromDocuments(documents);
     return graphql_tools_1.mergeTypeDefs(definitions, mergeOptions);
 };

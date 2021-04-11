@@ -1,12 +1,12 @@
 import esm from 'esm';
 import { isGraphQLExtName, isPrefixedExtName } from './path.js';
 import { readFileSync } from 'fs';
-const esmRequire = esm(module, { cache: false, cjs: { cache: false }, force: true });
+const esmRequire = esm(module);
 /**
  * Merges the default config for loadTypeDefs with provided config.
  * @param config The config provided to loadTypeDefs
  */
-export const setConfig = (config = {}) => ({
+export const setConfig = (config = {}, debug = false) => ({
     // Configures use of below custom requireMethod
     // for all files targeted by graphql-tools.loadFiles
     useRequire: true,
@@ -24,8 +24,10 @@ export const setConfig = (config = {}) => ({
             imported = esmRequire(absPath);
         }
         catch (err) {
-            // Log module import errors
-            console.error(err);
+            if (debug === true) {
+                // Log module import errors
+                console.error(err);
+            }
         }
         finally {
             return imported;

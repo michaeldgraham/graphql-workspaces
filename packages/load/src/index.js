@@ -14,9 +14,9 @@ const mergeOptions = {
  * @param pattern Glob pattern or patterns to use when loading files
  * @param options Additional options
  */
-export const loadWorkspace = async (pattern = "", config = {}) => {
-  const files = await loadFiles(pattern, setConfig(config));
-  const documents = extractDocumentsFromFiles(files);
+export const loadWorkspace = async (pattern = "", config = {}, debug = false) => {
+  const files = await loadFiles(pattern, setConfig(config, debug));
+  const documents = extractDocumentsFromFiles(files, debug);
   const definitions = extractDefinitionsFromDocuments(documents);
   return mergeTypeDefs(definitions, mergeOptions);
 };
@@ -25,9 +25,9 @@ export const loadWorkspace = async (pattern = "", config = {}) => {
  * @param pattern Glob pattern or patterns to use when loading files
  * @param options Additional options
  */
-export const loadWorkspaceSync = (pattern = "", config = {}) => {
-  const files = loadFilesSync(pattern, setConfig(config));
-  const documents = extractDocumentsFromFiles(files);
+export const loadWorkspaceSync = (pattern = "", config = {}, debug = false) => {
+  const files = loadFilesSync(pattern, setConfig(config, debug));
+  const documents = extractDocumentsFromFiles(files, debug);
   const definitions = extractDefinitionsFromDocuments(documents);
   return mergeTypeDefs(definitions, mergeOptions);
 };

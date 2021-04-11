@@ -7,12 +7,12 @@ exports.setConfig = void 0;
 const esm_1 = __importDefault(require("esm"));
 const path_js_1 = require("./path.js");
 const fs_1 = require("fs");
-const esmRequire = esm_1.default(module, { cache: false, cjs: { cache: false }, force: true });
+const esmRequire = esm_1.default(module);
 /**
  * Merges the default config for loadTypeDefs with provided config.
  * @param config The config provided to loadTypeDefs
  */
-const setConfig = (config = {}) => (Object.assign({ 
+const setConfig = (config = {}, debug = false) => (Object.assign({ 
     // Configures use of below custom requireMethod
     // for all files targeted by graphql-tools.loadFiles
     useRequire: true, requireMethod: (absPath) => {
@@ -29,8 +29,10 @@ const setConfig = (config = {}) => (Object.assign({
             imported = esmRequire(absPath);
         }
         catch (err) {
-            // Log module import errors
-            console.error(err);
+            if (debug === true) {
+                // Log module import errors
+                console.error(err);
+            }
         }
         finally {
             return imported;

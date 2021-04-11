@@ -5,7 +5,7 @@ const isObject = require('lodash.isobject');
  * Extracts GraphQL Documents from loaded files.
  * @param files The files to extract from
  */
-const extractDocumentsFromFiles = (files = []) => files.flatMap(file => {
+const extractDocumentsFromFiles = (files = [], debug = false) => files.flatMap(file => {
     // Default exports is a GraphQL Dcument
     if (isDocumentNode(file))
         return file;
@@ -18,7 +18,9 @@ const extractDocumentsFromFiles = (files = []) => files.flatMap(file => {
             return parseGraphQLSDL("0", file).document;
         }
         catch (err) {
-            // console.error(err);
+            if (debug === true) {
+                console.error(err);
+            }
         }
     }
     return {};
@@ -36,14 +38,18 @@ const extractDocumentsFromFile = (file = {}) => Object.values(file).flatMap(expo
     }
     catch (err) {
         // If not a schema, error = schema.getTypeMap is not a function 
-        // console.error(err);
+        if (debug === true) {
+            console.error(err);
+        }
     }
     try {
         // Try to parse as SDL
         return parseGraphQLSDL("0", file).document;
     }
     catch (err) {
-        // console.error(err);
+        if (debug === true) {
+            console.error(err);
+        }
     }
     return {};
 });

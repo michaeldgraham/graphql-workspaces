@@ -4,6 +4,8 @@ const path = require('path');
 const { isPrefixedExtName } = require('../path');
 const fs = require("fs");
 const { isIgnoredPath } = require('ignorefs');
+const concurrently = require('concurrently');
+const chokidar = require('chokidar');
 
 const command = "print <path|p>";
 
@@ -23,19 +25,25 @@ const builder = (yargs) => {
       string: true,
       default: "printed"
     })
+    .option("watch", {
+      alias: "w",
+      description: "Sets the printer to watch mode",
+      boolean: true,
+      default: false
+    })
     .option("debug", {
       alias: "d",
-      description: "Sets the printer to explain edge cases",
+      description: "Sets the printer to log errors to terminal",
       boolean: true,
       default: false
     })
 };
 
-const printer = async (absPath = "", pattern = "", name) => {
+const printer = async (absPath = "", pattern = "", name, debug) => {
   const parsed = path.parse(absPath);
   const fileName = parsed.name;
   if(fileName) {
-    const loaded = await loadWorkspace(pattern);
+    const loaded = await loadWorkspace(pattern, {}, debug);
     const printPath = path.format({
       ...parsed,
       base: `${fileName}.${name}.graphql`
@@ -43,7 +51,7 @@ const printer = async (absPath = "", pattern = "", name) => {
     const definitions = loaded.definitions || [];
     if(definitions.length) {
       const formatted = print(loaded);
-      fs.createWriteStream(printPath).write(formatted);
+      fs.writeFileSync(printPath, formatted);
     }
   }
 };
@@ -59,8 +67,9 @@ const isValidAbsolutePath = (absPath = "", debug) => {
 
 const handler = ({
   "path": pattern,
-  "debug": debug,
-  "name": name
+  "name": name,
+  "watch": watch,
+  "debug": debug
 }) => {
   const absPath = path.resolve(pattern);
   if(pattern) {
@@ -68,9 +77,45 @@ const handler = ({
       if(!exists) throw new Error(`Nothing exists at the path: ${absPath}`);
       fs.lstat(absPath, (err) => {
         if(err) throw new Error(`Invalid path: ${absPath}`);
-        if(isValidAbsolutePath(absPath, debug)) printer(absPath, pattern, name);
+        if(isValidAbsolutePath(absPath, debug)) {
+          // Run initial print - when called again in watch mode, 
+          // a ubprocesses is spawned by concurrently, handled below.
+          // Doing so prevents modules from being cached due when loaded
+          // from within the watcher process
+          printer(absPath, pattern, name, debug);
+        }
       });
     });
+    if(watch) {
+      const watcher = chokidar.watch(pattern);
+      // if watching a directory, path is contained in it
+      // else its the same as a single, watched file 
+      watcher.on('change', path => {
+        // use concurrently to use gql in a subprocess to
+        // run the print command, avoiding module caching
+        // when using the printer function within the watcher
+        concurrently([
+          {
+            name: 'gql',
+            command: `gql print ${pattern}${debug ? '--debug' : ''}`,
+            prefixColor: 'green',
+          },
+        ], {
+          restartTries: 3,
+          prefix: '{time} {name} |',
+          timestampFormat: 'HH:mm:ss',
+        })
+        .catch((e) => {
+          console.error(e.message);
+          watcher.close();
+        });
+      });
+      // If concurrently is called at least once, SIGINT
+      // no longer exists the watcher
+      process.on('SIGINT', () => {
+        watcher.close();
+      });
+    }
   }
 };
 
