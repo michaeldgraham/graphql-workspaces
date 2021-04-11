@@ -90,7 +90,7 @@ const handler = ({ "path": pattern, "name": name, "watch": watch, "debug": debug
                 concurrently([
                     {
                         name: 'gql',
-                        command: `gql print ${pattern}${debug ? '--debug' : ''}`,
+                        command: `gql print ${pattern}${debug ? ' --debug' : ''}`,
                         prefixColor: 'green',
                     },
                 ], {

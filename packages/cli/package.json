@@ -1,6 +1,6 @@
 {
   "name": "@graphql-workspaces/cli",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "A CLI for GraphQL workflow.",
   "main": "./dist/cjs/index.js",
   "bin": {
