@@ -15,7 +15,7 @@ npm install -g @graphql-workspaces/cli
 gql [command] [options]
 ```
 ### Commands
-#### Print
+### Print
 #### `gql print <path>`
 ```
   print <path|p>  Prints the GraphQL contents at <path>
@@ -32,7 +32,7 @@ Both `.graphql` and `.gql` files can be loaded and printed. GraphQL documents ex
 
 An [executable schema](https://www.graphql-tools.com/docs/generate-schema/) can also be printed, but a version conflict with the [graphql](https://www.npmjs.com/package/graphql) library must be avoided. To do this, install the cli locally and make an npm script, such as `print-generated-schema`, calling `./node_modules/.bin/gql`, with a path to the file exporting the schema. This is useful for printing the executable schema built by libraries that transform and augment the type definitions provided to them, such as those that integrate database languages.
 
-##### Arguments
+#### Arguments
 #### `gql print <path> [name | n]`
 The `--name` argument sets the second prefix of the `.graphql` file generated from the print command. The default is `printed.graphql`, so with this argument you could change it from that to `custom.graphql` to generate `MyDirectory.custom.graphql` instead of `MyDirectory.printed.graphql`;
 ```
