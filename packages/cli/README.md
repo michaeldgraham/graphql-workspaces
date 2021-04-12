@@ -20,11 +20,11 @@ gql [command] [options]
 ```
   print <path|p>  Prints the GraphQL contents at <path>
 
-  <path|p>         Required: Positional argument for path
-  --name, -n       Optional: Customizes extension in printed.graphql
-  --watch, -w      Optional: Watches <path> for changes
-  --validate, -v   Optional: Validates loaded files as a schema
-  --debug, -d      Optional: Logs language validation errors to terminal
+  <path|p>         Required positional argument for path
+  --name, -n       Customizes extension in printed.graphql
+  --watch, -w      Watches <path> for file changes
+  --validate, -v   Validates loaded files as a schema
+  --debug, -d      Logs language validation errors to terminal
 ```
 The print command loads and merges the GraphQL contents of file or directory at the provided path and prints the results to a `.printed.graphql` file at the same location.
 
@@ -47,7 +47,7 @@ gql print MyDirectory --watch
 gql print MyDirectory -w
 ```
 #### `gql print <path> [validate | v]`
-The `--validate` argument validates the type definitions merged as a result of the print command by using [makeExecutableSchema](https://www.graphql-tools.com/docs/generate-schema/) from [graphql-tools](https://www.graphql-tools.com/docs/introduction/). The familiar GraphQL schema validation errors, such as referring to a type without a definition, are normally ignored when printing to allow for a more flexible development process. Using this argument, the same errors you would expect to get from `makeExecutableSchema` will be printed to the terminal.
+The `--validate` argument validates the type definitions merged as a result of the print command by using [makeExecutableSchema](https://www.graphql-tools.com/docs/generate-schema/) from [graphql-tools](https://www.graphql-tools.com/docs/introduction/). The familiar GraphQL schema validation errors, such as referring to a type without a definition, are not logged to the terminal by default. Using this argument, the same errors you would expect to get from `makeExecutableSchema` will be printed to the terminal.
 ```
 gql print MyDirectory --validate
 gql print MyDirectory -v

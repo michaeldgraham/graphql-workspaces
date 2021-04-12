@@ -8,6 +8,7 @@ const { isIgnoredPath } = require('ignorefs');
 const { makeExecutableSchema } = require('graphql-tools');
 const concurrently = require('concurrently');
 const chokidar = require('chokidar');
+const { Writer } = require('steno');
 const command = "print <path|p>";
 const describe = "Prints the merged GraphQL Documents at the provided path.";
 const aliases = ["p"];
@@ -54,7 +55,8 @@ const printer = async (absPath = "", pattern = "", name, debug, validate) => {
         const definitions = loaded.definitions || [];
         if (definitions.length) {
             const formatted = print(loaded);
-            fs.writeFileSync(printPath, formatted);
+            const file = new Writer(printPath);
+            file.write(formatted);
             if (validate) {
                 makeExecutableSchema({
                     typeDefs: formatted
@@ -73,6 +75,7 @@ const isValidAbsolutePath = (absPath = "", debug) => {
         console.error(`\n[graphql-workspaces] File path is already generated or contains multiple extensions.\n`);
     return !isPrefixedExt && !isIgnored;
 };
+const rebuildOptions = ({ pattern, name, validate, debug }) => `${pattern}${debug ? ' --debug' : ''}${validate ? ' --validate' : ''}${name ? ` --name ${name}` : ''}`;
 const handler = ({ "path": pattern, "name": name, "watch": watch, "debug": debug, "validate": validate }) => {
     const absPath = path.resolve(pattern);
     if (pattern) {
@@ -93,34 +96,40 @@ const handler = ({ "path": pattern, "name": name, "watch": watch, "debug": debug
         });
         if (watch) {
             const watcher = chokidar.watch(pattern);
-            // Reuse the same command arguments during watch
-            const printerArgs = `${debug ? ' --debug' : ''}${validate ? ' --validate' : ''}`;
-            // if watching a directory, path is contained in it
-            // else its the same as a single, watched file 
-            watcher.on('change', path => {
-                // use concurrently to use gql in a subprocess to
-                // run the print command, avoiding module caching
-                // when using the printer function within the watcher
-                concurrently([
-                    {
-                        name: 'gql',
-                        command: `gql print ${pattern}${printerArgs}`,
-                        prefixColor: '#00FFFF',
-                    },
-                ], {
-                    restartTries: 3,
-                    prefix: '{time} {name} |',
-                    timestampFormat: 'HH:mm:ss',
-                })
-                    .catch((e) => {
-                    console.error(e.message);
+            watcher.on('ready', () => {
+                const initialOptions = rebuildOptions({
+                    pattern,
+                    name,
+                    validate,
+                    debug
+                });
+                // if watching a directory, path is contained in it
+                // else its the same as a single, watched file 
+                watcher.on('change', path => {
+                    // use concurrently to use gql in a subprocess to
+                    // run the print command, avoiding module caching
+                    // when using the printer function within the watcher
+                    concurrently([
+                        {
+                            name: 'gql',
+                            command: `gql print ${initialOptions}`,
+                            prefixColor: '#00FFFF',
+                        },
+                    ], {
+                        restartTries: 3,
+                        prefix: '{time} {name} |',
+                        timestampFormat: 'HH:mm:ss',
+                    })
+                        .catch((err) => {
+                        console.error(err);
+                        watcher.close();
+                    });
+                });
+                // If concurrently is called at least once, SIGINT
+                // no longer exists the watcher
+                process.on('SIGINT', () => {
                     watcher.close();
                 });
-            });
-            // If concurrently is called at least once, SIGINT
-            // no longer exists the watcher
-            process.on('SIGINT', () => {
-                watcher.close();
             });
         }
     }
