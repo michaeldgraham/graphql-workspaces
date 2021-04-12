@@ -1,5 +1,8 @@
 # GraphQL Workspaces
 This module is a CLI for GraphQL workflow.
+
+https://www.npmjs.com/package/@graphql-workspaces/cli
+
 ## Motivation
 When a GraphQL schema grows enough to motivate distributing its type definitions into separate files, one might find themselves writing scripts to merge a directory containing them into a single file or variable. The merged schema can then be provided to a server to start and test the API. 
 
